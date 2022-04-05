@@ -49,6 +49,19 @@ spec:
           }
         },
         "dataInputSchema" : "/var/run/secrets/openshift.io/build/my-file-example-build-core-workflow/input-schema.json",
+        "start": "squareState",
+        "functions": [
+          {
+            "name": "max",
+            "type": "expression",
+            "operation": "{max: .numbers | max_by(.x), min: .numbers | min_by(.y)}"
+          },
+          {
+            "name": "printMessage",
+            "type": "custom",
+            "operation": "sysout"
+          }
+        ],
         "states": [
           {
             "name": "squareState",

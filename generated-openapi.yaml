@@ -1,0 +1,426 @@
+openapi: 3.0.3
+info:
+  title: api-kogito-workflow API
+  version: 1.0.0-SNAPSHOT
+paths:
+  /:
+    post:
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/CloudEvent'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+  /expression:
+    get:
+      tags:
+      - Expression Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExpressionModelOutput'
+    post:
+      tags:
+      - Expression Resource
+      parameters:
+      - name: businessKey
+        in: query
+        schema:
+          default: ""
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpressionModelInput'
+      responses:
+        "200":
+          description: OK
+  /expression/schema:
+    get:
+      tags:
+      - Expression Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+  /expression/{id}:
+    get:
+      tags:
+      - Expression Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionModelOutput'
+    put:
+      tags:
+      - Expression Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpressionModel'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionModelOutput'
+    delete:
+      tags:
+      - Expression Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionModelOutput'
+  /expression/{id}/tasks:
+    get:
+      tags:
+      - Expression Resource
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: group
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+      - name: user
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskModel'
+  /messaging/topics:
+    get:
+      tags:
+      - Quarkus Topics Information Resource
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    CloudEvent:
+      type: object
+      properties:
+        specVersion:
+          $ref: '#/components/schemas/SpecVersion'
+        id:
+          type: string
+        type:
+          type: string
+        source:
+          format: uri
+          type: string
+        dataContentType:
+          type: string
+        dataSchema:
+          format: uri
+          type: string
+        subject:
+          type: string
+        time:
+          format: date-time
+          type: string
+        attributeNames:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        extensionNames:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        data:
+          $ref: '#/components/schemas/CloudEventData'
+    CloudEventData:
+      type: object
+    EntityTag:
+      type: object
+      properties:
+        value:
+          type: string
+        weak:
+          type: boolean
+    ExpressionModel:
+      type: object
+      properties:
+        id:
+          type: string
+        workflowdata:
+          $ref: '#/components/schemas/JsonNode'
+    ExpressionModelInput:
+      type: object
+      properties:
+        workflowdata:
+          $ref: '#/components/schemas/JsonNode'
+    ExpressionModelOutput:
+      type: object
+      properties:
+        id:
+          type: string
+        workflowdata:
+          $ref: '#/components/schemas/JsonNode'
+    Family:
+      enum:
+      - CLIENT_ERROR
+      - INFORMATIONAL
+      - OTHER
+      - REDIRECTION
+      - SERVER_ERROR
+      - SUCCESSFUL
+      type: string
+    JsonNode:
+      type: array
+    Link:
+      type: object
+      properties:
+        uri:
+          format: uri
+          type: string
+        uriBuilder:
+          $ref: '#/components/schemas/UriBuilder'
+        rel:
+          type: string
+        rels:
+          type: array
+          items:
+            type: string
+        title:
+          type: string
+        type:
+          type: string
+        params:
+          type: object
+          additionalProperties:
+            type: string
+    Locale:
+      type: object
+      properties:
+        language:
+          type: string
+        script:
+          type: string
+        country:
+          type: string
+        variant:
+          type: string
+        extensionKeys:
+          uniqueItems: true
+          type: array
+          items:
+            format: byte
+            type: string
+        unicodeLocaleAttributes:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        unicodeLocaleKeys:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        iSO3Language:
+          type: string
+        iSO3Country:
+          type: string
+        displayLanguage:
+          type: string
+        displayScript:
+          type: string
+        displayCountry:
+          type: string
+        displayVariant:
+          type: string
+        displayName:
+          type: string
+    MediaType:
+      type: object
+      properties:
+        type:
+          type: string
+        subtype:
+          type: string
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+        wildcardType:
+          type: boolean
+        wildcardSubtype:
+          type: boolean
+    MultivaluedMapStringObject:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: object
+    MultivaluedMapStringString:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+    NewCookie:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        version:
+          format: int32
+          type: integer
+        path:
+          type: string
+        domain:
+          type: string
+        comment:
+          type: string
+        maxAge:
+          format: int32
+          type: integer
+        expiry:
+          format: date
+          type: string
+        secure:
+          type: boolean
+        httpOnly:
+          type: boolean
+    Response:
+      type: object
+      properties:
+        status:
+          format: int32
+          type: integer
+        statusInfo:
+          $ref: '#/components/schemas/StatusType'
+        entity:
+          type: object
+        mediaType:
+          $ref: '#/components/schemas/MediaType'
+        language:
+          $ref: '#/components/schemas/Locale'
+        length:
+          format: int32
+          type: integer
+        allowedMethods:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+        cookies:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/NewCookie'
+        entityTag:
+          $ref: '#/components/schemas/EntityTag'
+        date:
+          format: date
+          type: string
+        lastModified:
+          format: date
+          type: string
+        location:
+          format: uri
+          type: string
+        links:
+          uniqueItems: true
+          type: array
+          items:
+            $ref: '#/components/schemas/Link'
+        metadata:
+          $ref: '#/components/schemas/MultivaluedMapStringObject'
+        headers:
+          $ref: '#/components/schemas/MultivaluedMapStringObject'
+        stringHeaders:
+          $ref: '#/components/schemas/MultivaluedMapStringString'
+    SpecVersion:
+      enum:
+      - V03
+      - V1
+      type: string
+    StatusType:
+      type: object
+      properties:
+        statusCode:
+          format: int32
+          type: integer
+        family:
+          $ref: '#/components/schemas/Family'
+        reasonPhrase:
+          type: string
+    TaskModel:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        state:
+          format: int32
+          type: integer
+        phase:
+          type: string
+        phaseStatus:
+          type: string
+        parameters:
+          type: object
+        results:
+          type: object
+    UriBuilder:
+      type: object
