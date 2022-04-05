@@ -1,0 +1,158 @@
+{
+  "id": "expression",
+  "version": "1.0",
+  "name": "Workflow Expression example",
+  "constants" : {
+    "Dog" : {
+      "castellano" : "perro",
+      "leones": "perru",
+      "gallego" : "can",
+      "aragones" : "cocho",
+      "catalan" : "gos",
+      "vasco": "txakurra"
+    }
+  },
+  "dataInputSchema" : "file:///var/run/secrets/openshift.io/build/datainputschema-file-sd-build-core-workflow/input-schema.json",
+  "states": [
+    {
+      "name": "squareState",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "maxAction",
+          "functionRef": {
+            "refName": "max"
+          },
+          "actionDataFilter": {
+            "results" : ".max.x", 
+            "toStateData" : ".number"
+          }
+        }
+      ],
+      "transition": "finish"
+    },
+    {
+      "name": "finish",
+      "type": "operation",
+      "stateDataFilter": {
+        "input": "{result: .number}"
+      },
+      "actions": [
+        {
+          "name": "printAction",
+          "functionRef": {
+            "refName": "printMessage",
+            "arguments": {
+              "message": ".result"
+            }
+          }
+        }
+      ],
+      "end": {
+        "terminate": "true"
+      }
+    }
+  ]
+}[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< org.pm:api-kogito-workflow >---------------------
+[INFO] Building api-kogito-workflow 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/2.5/maven-clean-plugin-2.5.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/2.5/maven-clean-plugin-2.5.pom (3.9 kB at 3.8 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/2.5/maven-clean-plugin-2.5.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-clean-plugin/2.5/maven-clean-plugin-2.5.jar (25 kB at 187 kB/s)
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ api-kogito-workflow ---
+[INFO] Deleting /tmp/input/target
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ api-kogito-workflow ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- quarkus-maven-plugin:2.7.1.Final:generate-code (default) @ api-kogito-workflow ---
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ api-kogito-workflow ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- quarkus-maven-plugin:2.7.1.Final:generate-code-tests (default) @ api-kogito-workflow ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ api-kogito-workflow ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /tmp/input/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ api-kogito-workflow ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.0.0-M5:test (default-test) @ api-kogito-workflow ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ api-kogito-workflow ---
+[INFO] Building jar: /tmp/input/target/api-kogito-workflow-1.0.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- quarkus-maven-plugin:2.7.1.Final:build (default) @ api-kogito-workflow ---
+[INFO] Performed addonsConfig discovery, found: AddonsConfig{usePersistence=false, useTracing=false, useMonitoring=false, usePrometheusMonitoring=false, useCloudEvents=true, useExplainability=false, useProcessSVG=false, useEventDrivenDecisions=false, useEventDrivenRules=false}
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  43.269 s
+[INFO] Finished at: 2022-04-05T10:43:17Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal io.quarkus.platform:quarkus-maven-plugin:2.7.1.Final:build (default) on project api-kogito-workflow: Failed to build quarkus application: io.quarkus.builder.BuildException: Build failure: Build failed due to errors
+[ERROR]         [error]: Build step org.kie.kogito.quarkus.common.deployment.KogitoAssetsProcessor#generateSources threw an exception: org.kie.kogito.codegen.process.ProcessParsingException: Could not parse file /tmp/input/src/main/resources/datainputschema-file-sd.sw.json
+[ERROR]         at org.kie.kogito.codegen.process.ProcessCodegen.parseWorkflowFile(ProcessCodegen.java:228)
+[ERROR]         at org.kie.kogito.codegen.process.ProcessCodegen.lambda$ofCollectedResources$1(ProcessCodegen.java:141)
+[ERROR]         at org.kie.kogito.codegen.process.ProcessCodegen$$Lambda$432/0x00000000740ab3e0.apply(Unknown Source)
+[ERROR]         at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)
+[ERROR]         at java.base/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:177)
+[ERROR]         at java.base/java.util.Collections$UnmodifiableMap$UnmodifiableEntrySet.lambda$entryConsumer$0(Collections.java:1576)
+[ERROR]         at java.util.Collections$UnmodifiableMap$UnmodifiableEntrySet$$Lambda$433/0x00000000740ab920.accept(Unknown Source)
+[ERROR]         at java.base/java.util.HashMap$EntrySpliterator.forEachRemaining(HashMap.java:1764)
+[ERROR]         at java.base/java.util.Collections$UnmodifiableMap$UnmodifiableEntrySet$UnmodifiableEntrySetSpliterator.forEachRemaining(Collections.java:1601)
+[ERROR]         at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:497)
+[ERROR]         at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:487)
+[ERROR]         at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:150)
+[ERROR]         at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:173)
+[ERROR]         at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:239)
+[ERROR]         at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:497)
+[ERROR]         at java.base/java.util.stream.ReferencePipeline$7$1.accept(ReferencePipeline.java:274)
+[ERROR]         at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)
+[ERROR]         at java.base/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1655)
+[ERROR]         at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:497)
+[ERROR]         at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:487)
+[ERROR]         at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)
+[ERROR]         at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:239)
+[ERROR]         at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:578)
+[ERROR]         at org.kie.kogito.codegen.process.ProcessCodegen.ofCollectedResources(ProcessCodegen.java:146)
+[ERROR]         at org.kie.kogito.codegen.process.ProcessCodegenFactory.create(ProcessCodegenFactory.java:29)
+[ERROR]         at org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery.lambda$loadGenerators$0(ApplicationGeneratorDiscovery.java:60)
+[ERROR]         at org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery$$Lambda$390/0x000000007404eaa0.apply(Unknown Source)
+[ERROR]         at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)
+[ERROR]         at java.base/java.util.Iterator.forEachRemaining(Iterator.java:133)
+[ERROR]         at java.base/java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1801)
+[ERROR]         at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:497)
+[ERROR]         at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:487)
+[ERROR]         at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:913)
+[ERROR]         at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:239)
+[ERROR]         at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:578)
+[ERROR]         at org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery.loadGenerators(ApplicationGeneratorDiscovery.java:62)
+[ERROR]         at org.kie.kogito.codegen.core.utils.ApplicationGeneratorDiscovery.discover(ApplicationGeneratorDiscovery.java:48)
+[ERROR]         at org.kie.kogito.quarkus.common.deployment.KogitoAssetsProcessor.generateFiles(KogitoAssetsProcessor.java:195)
+[ERROR]         at org.kie.kogito.quarkus.common.deployment.KogitoAssetsProcessor.generateSources(KogitoAssetsProcessor.java:109)
+[ERROR]         at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[ERROR]         at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+[ERROR]         at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[ERROR]         at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+[ERROR]         at io.quarkus.deployment.ExtensionLoader$2.execute(ExtensionLoader.java:882)
+[ERROR]         at io.quarkus.builder.BuildContext.run(BuildContext.java:277)
+[ERROR]         at io.quarkus.builder.BuildContext$$Lambda$239/0x0000000030004a50.run(Unknown Source)
+[ERROR]         at org.jboss.threads.ContextHandler$1.runWith(ContextHandler.java:18)
+[ERROR]         at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2449)
+[ERROR]         at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1478)
+[ERROR]         at java.base/java.lang.Thread.run(Thread.java:866)
+[ERROR]         at org.jboss.threads.JBossThread.run(JBossThread.java:501)
+[ERROR] Caused by: java.lang.NullPointerException
+[ERROR]         at org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.parseProcess(ServerlessWorkflowParser.java:93)
+[ERROR]         at org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser.getProcessInfo(ServerlessWorkflowParser.java:127)
+[ERROR]         at org.kie.kogito.codegen.process.ProcessCodegen.parseWorkflowFile(ProcessCodegen.java:226)
+[ERROR]         ... 50 more
