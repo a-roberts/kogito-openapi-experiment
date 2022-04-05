@@ -1,0 +1,86 @@
+# This doesn't work, you get an NPE, asked in Kogito Zulip
+# Nobody in the world has an inline example
+# Quite possibly not supported
+apiVersion: my.api.com/v1beta1
+kind: AdamKogitoExample
+metadata:
+  name: my-inline-kogito-example
+spec:
+  kogito:
+    # Do it all inline, no need for a data input schema separately
+    workflow: |-
+      {
+        "id": "expression",
+        "version": "1.0",
+        "name": "Workflow Expression example",
+        "constants" : {
+          "Dog" : {
+            "castellano" : "perro",
+            "leones": "perru",
+            "gallego" : "can",
+            "aragones" : "cocho",
+            "catalan" : "gos",
+            "vasco": "txakurra"
+          }
+        },
+        "dataInputSchema": {
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "title": "Expression",
+          "description": "Schema for expression test",
+          "type": "object",
+          "properties": {
+            "numbers": {
+              "description": "The array of numbers to be operated with",
+              "type": "array",
+              "items" : {
+                  "type" : "object",
+                  "properties" : {
+                    "x" : {"type":"number"},
+                    "y" : {"type":"number"}
+                  }
+              }
+            }
+          },
+          "required": ["numbers"]
+        },
+        "states": [
+          {
+            "name": "squareState",
+            "type": "operation",
+            "actions": [
+              {
+                "name": "maxAction",
+                "functionRef": {
+                  "refName": "max"
+                },
+                "actionDataFilter": {
+                  "results" : ".max.x", 
+                  "toStateData" : ".number"
+                }
+              }
+            ],
+            "transition": "finish"
+          },
+          {
+            "name": "finish",
+            "type": "operation",
+            "stateDataFilter": {
+              "input": "{result: .number}"
+            },
+            "actions": [
+              {
+                "name": "printAction",
+                "functionRef": {
+                  "refName": "printMessage",
+                  "arguments": {
+                    "message": ".result"
+                  }
+                }
+              }
+            ],
+            "end": {
+              "terminate": "true"
+            }
+          }
+        ]
+      }
